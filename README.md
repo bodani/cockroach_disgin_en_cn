@@ -1,0 +1,2 @@
+# cockroach_disgin_en_cn
+蟑螂数据库设计文档中英对照
