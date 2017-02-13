@@ -107,7 +107,7 @@ lock-free reads and writes but still allows write skew. SSI eliminates
 write skew, but introduces a performance hit in the case of a
 contentious system. SSI is the default isolation; clients must
 consciously decide to trade correctness for performance. CockroachDB
-implements [a limited form of linearizability](#linearizability),
+implements [a limited form of linearizability](#Strict Serializability (Linearizability)),
 providing ordering for any observer or chain of observers.
 
 
@@ -813,6 +813,7 @@ which would be feasible for smaller, geographically-proximate clusters.
 我们期望重试会很罕见，但如果重试会成为问题，这种假设就需要被重新审视。注意，这个问题不适用于历史读操作。一个可替换的不需要重试的方法是，先对所有参与节点进行一次轮询，然后选择其中最大的系统时钟作为时间戳。然而，想预先知道哪些节点被访问是很困难的，并且有潜在的限制。Cockroach也潜在地使用了一个权威的全局时钟（Google的[Percolator](https://www.usenix.org/legacy/event/osdi10/tech/full_papers/Peng.pdf))做法类似，译注：是Time Oracle或是Chubby lockservice)，全局时钟对于更小型的、地理邻近的集群是可行的。（译注：google使用的是大型的、全球地域分布的集群，所以其使用的是原子钟，像Cockroach这种全局时钟是不行的）。
 
 # Strict Serializability (Linearizability)
+
 # 严格序列化（线性化）
 
 Roughly speaking, the gap between <i>strict serializability</i> (which we use
@@ -864,6 +865,7 @@ See the blog post below for much more in-depth information.
 https://www.cockroachlabs.com/blog/living-without-atomic-clocks/
 
 # Logical Map Content
+
 # 逻辑Map内容
 
 Logically, the map contains a series of reserved system key/value
@@ -885,6 +887,7 @@ subsystem).
   subsystem, which employs its own key anatomy.
 
 # Stores and Storage
+
 # store和存储
 
 Nodes contain one or more stores. Each store should be placed on a unique disk.
@@ -915,6 +918,7 @@ Zone配置被用于控制range的复制因子，并增加约束限制range副本
 range将增加或减少副本的数量并基于zone配置的约束将它的副本移动到正确的store。
 
 # Self Repair
+
 # 自修复
 
 If a store has not been heard from (gossiped their descriptors) in some time,
@@ -965,6 +969,7 @@ In the future, some other factors that might be considered include:
 - 每个store持有租期的range的数量
 
 # Range Metadata
+
 # Range 元数据
 
 The default approximate size of a range is 64M (2\^26 B). In order to
@@ -1158,6 +1163,7 @@ client evicts the stale entries and possibly does a new lookup.
 如果在一次检索中，协商好的range中没有匹配客户端的期望，客户端将移除这些过期条目并可能重新检索。
 
 # Raft - Consistency of Range Replicas
+
 # Raft – Range副本一致性
 
 Each range is configured to consist of three or more replicas, as specified by
@@ -1205,6 +1211,7 @@ Future optimizations may include two-phase elections and quiescent ranges
 将来优化可能包含两阶段选举和休眠range（即：完全停止非活动range间的通信）。
 
 # Range Leases
+
 # Range 租期
 
 As outlined in the Raft section, the replicas of a Range are organized as a
@@ -1280,6 +1287,7 @@ until the next lease goes into effect.
 这也可以通过承诺直到下一次租约生效时不再提供任何读取操作避免进入停滞期间。
 
 ## Colocation with Raft leadership
+
 ## 托管于Raft leadership
 
 The range lease is completely separate from Raft leadership, and so without
@@ -1295,6 +1303,7 @@ Raft leadership和range租约可能不被相同的副本所持有。因为不同
 成本昂贵，所以每次重新续订或者转移也试图合并这两种角色。实际上，这意味着不匹配会很少出现并且会被快速自修正。
 
 ## Command Execution Flow
+
 ## 命令执行流程
 
 This subsection describes how a lease holder replica processes a
@@ -1363,6 +1372,7 @@ expired, the command will be rejected by the replica.
 当租约已经过期时，命令会被该副本拒绝。
 
 # Splitting / Merging Ranges
+
 # 拆分/合并 Range
 
 Nodes split or merge ranges based on whether they exceed maximum or
@@ -1588,6 +1598,7 @@ culls older timeseries data, downsampling and eventually discarding it.
 一个[周期性后台进程](RFCS/time_series_culling.md)会挑选较老的时间序列数据、下采样并最终丢弃它。（译注：downsampling，一种采样算法）
 
 # Key-prefix Accounting and Zones
+
 # Key前缀 记账和地域
 
 Arbitrarily fine-grained accounting is specified via
@@ -1756,6 +1767,8 @@ split to a duplicate range comprising the new configuration.
 
 # SQL
 
+# SQL
+
 Each node in a cluster can accept SQL client connections. CockroachDB
 supports the PostgreSQL wire protocol, to enable reuse of native
 PostgreSQL client drivers. Connections using SSL and authenticated
@@ -1859,7 +1872,7 @@ the query plan and returns it to the client via pgwire.
 
 ## Data mapping between the SQL model and KV
 
-## SQL模型和KV之间数据映射 ##
+## SQL模型和KV之间数据映射 
 
 Every SQL table has a primary key in CockroachDB. (If a table is created
 without one, an implicit primary key is provided automatically.)
