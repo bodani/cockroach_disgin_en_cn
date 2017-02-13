@@ -1,11 +1,14 @@
 # About
+
 # 关于
+
 This document is an updated version of the original design documents
 by Spencer Kimball from early 2014.
 
 本文档为2014年早期由Spencer Kimball编写的初始设计文档的更新版本。
 
 # Overview
+
 # 概述
 
 CockroachDB is a distributed SQL database. The primary design goals
@@ -125,6 +128,7 @@ CockroachDB允许对任意数据地域进行配置。允许配置复制因子、
 但与Spanner不同，地域是整体的，不允许在实体组层面进行更细粒度数据的移动。
 
 # Architecture
+
 # 架构
 
 CockroachDB implements a layered architecture. The highest level of
@@ -1472,6 +1476,7 @@ configuration metadata.
 在相同的数据中心内，具有很少容量的节点被选择，并进行特殊场景拆分，简单复制数据1：1并重置range配置元数据。
 
 # Node Allocation (via Gossip)
+
 # 节点分配（通过Gossip）
 
 New nodes must be allocated when a range is split. Instead of requiring
@@ -1559,6 +1564,7 @@ Gossip协议本身包含两个主要组件：
   为了高效，节点分配给每个gossip新条目一个序列号并追踪每个对等节点看到的最大序列号。每轮gossip通信仅同步包含新条目的增量。
 
 # Node and Cluster Metrics
+
 # 节点和集群度量
 
 Every component of the system is responsible for exporting interesting
@@ -1606,6 +1612,7 @@ Accounting is kept for the entire map by default.
 默认情况下，保持对整个map进行记帐。
 
 ## Accounting
+
 ## 记账
 
 To keep accounting for a range defined by a key prefix, an entry is created in
@@ -1721,6 +1728,7 @@ where `N` is the number of ranges in the key prefix.
 该平衡二叉树被维护用来描述range的层次结构。这限制了一个更新前消息的数量，到根时的数量是2*logN，N是该key前缀内range的数量。
 
 ## Zones
+
 ## 地域
 
 zones are stored in the map with keys prefixed by
@@ -1767,6 +1775,7 @@ SQL database.
 在会话的整个生命周期，客户端可以发送SQL来打开/关闭事务、发送语句、查询，或者设置会话参数，像其他SQL数据库一样。
 
 ## Language support
+
 ## 语言支持
 
 CockroachDB also attempts to emulate the flavor of SQL supported by
@@ -1796,6 +1805,7 @@ CockroachDB也努力仿效PostgreSQL支持的SQL，尽管它在如下重要方�
   2）访问其他数据库的现存SQL代码移到Cockroach无论如何也要做修改。
 
 ## SQL architecture
+
 ## SQL 结构
 
 Client connections over the network are handled in each node by a
@@ -1848,6 +1858,7 @@ the query plan and returns it to the client via pgwire.
 顶层计划者消费查询计划顶层节点产生的数据并且通过pgwire协议返回给客户端。
 
 ## Data mapping between the SQL model and KV
+
 ## SQL模型和KV之间数据映射 ##
 
 Every SQL table has a primary key in CockroachDB. (If a table is created
