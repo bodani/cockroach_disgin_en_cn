@@ -1,4 +1,4 @@
-# About
+/# About
 
 # 关于
 
@@ -107,7 +107,7 @@ lock-free reads and writes but still allows write skew. SSI eliminates
 write skew, but introduces a performance hit in the case of a
 contentious system. SSI is the default isolation; clients must
 consciously decide to trade correctness for performance. CockroachDB
-implements [a limited form of linearizability](#Strict Serializability (Linearizability)),
+implements [a limited form of linearizability](#strict-serializability-linearizability),
 providing ordering for any observer or chain of observers.
 
 
@@ -936,6 +936,8 @@ least greater than 50% of the replicas are again available.
 数量并且整个range被认定为失效，直到至少超过50%的副本再次有效。
 
 # Rebalancing
+
+# 重平衡
 
 As more data are added to the system, some stores may grow faster than others.
 To combat this and to spread the overall load across the full cluster, replicas
