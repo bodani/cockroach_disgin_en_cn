@@ -143,7 +143,7 @@ on others, we would warn the user. In such a case, we will use the order that th
 majority of nodes have.
 
 If we have three datacenters and each datacenter has 3 racks
-`datacenter=us-{{1,2,3}},rack={{1,2,3},{1,2,3},{1,2,3}}` there's no way to
+`datacenter=us-{{ 1,2,3 }},rack={{1,2,3},{1,2,3},{1,2,3}}` there's no way to
 distinguish the primary diversity factor automatically, but we can maximize
 diversity on both levels. In this situation, the best thing to do would be to
 have 3 replicas
